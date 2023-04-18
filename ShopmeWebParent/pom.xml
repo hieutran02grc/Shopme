@@ -14,17 +14,30 @@
 	<packaging>pom</packaging>
 	<name>ShopmeWebParent</name>
 	<description>parent_web project</description>
-	
+
+	<properties>
+		<java.version>15</java.version>
+	</properties>
+
 	<modules>
 		<module>ShopmeFrontEnd</module>
 		<module>ShopmeBackEnd</module>
 	</modules>
-	
-
-	<properties>	
-		<java.version>15</java.version>
-	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>5.3.14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -36,8 +49,12 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
 		<dependency>
@@ -54,7 +71,7 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap</artifactId>
-			<version>5.1.3</version>
+			<version>4.3.1</version>
 		</dependency>
 
 		<dependency>
@@ -67,14 +84,14 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>jquery</artifactId>
-			<version>3.6.4</version>
+			<version>3.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator-core</artifactId>
 			<version>0.52</version>
 		</dependency>
-		
+
 
 	</dependencies>
 
