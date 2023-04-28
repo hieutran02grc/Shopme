@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{style/style.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/style/style.css}" />
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" ></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" ></script>
 </head>
@@ -72,16 +72,31 @@
     </div>
 
     <div>
+        <form th:action="@{/users/page/1}" class="form-inline m-3">
+            <input type="hidden" name="sortField" th:value="${sortField}" />
+            <input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+            Filter:&nbsp;
+            <input type="search" name="keyword" th:value="${keyword}" class="form-control" required/>
+            &nbsp;&nbsp;
+            <input type="submit" value="Search" class="btn btn-primary" />
+            &nbsp;&nbsp;
+            <input type="button" value="Clear" class="btn btn-secondary" onclick="clearFilter()" />
+        </form>
+    </div>
+
+    <div>
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="thead-dark">
             <tr>
-                <th>User ID</th>
+                <th th:replace="fragments :: column_link('id', 'User ID')" />
                 <th>Photos</th>
-                <th>E-mail</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th th:replace="fragments :: column_link('email', 'E-mail')" />
+                <th th:replace="fragments :: column_link('firstName', 'First Name')" />
+                <th th:replace="fragments :: column_link('lastName', 'Last Name')" />
+
                 <th>Roles</th>
-                <th>Enabled</th>
+                <th th:replace="fragments :: column_link('enabled', 'Enabled')" />
                 <th></th>
             </tr>
             </thead>
@@ -91,7 +106,7 @@
                 <td>
                     <span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
                     <img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}"
-                         style="width: 100px" height="100px"/>
+                         style="width: 100px" />
                 </td>
                 <td>[[${user.email}]]</td>
                 <td>[[${user.firstName}]]</td>
@@ -124,6 +139,39 @@
         </table>
     </div>
 
+    <div class="text-center m-1" th:if="${totalItems > 0}">
+        <span>Showing users # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
+    </div>
+    <div class="text-center m-1" th:unless="${totalItems > 0}">
+        <span>No users found</span>
+    </div>
+
+    <div th:if="${totalPages > 1}">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(1, 'First')"></a>
+                </li>
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${currentPage - 1}, 'Previous')"></a>
+                </li>
+
+                <li th:class="${currentPage != i ? 'page-item': 'page-item active'}"
+                    th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a th:replace="fragments :: page_link(${i}, ${i})"></a>
+                </li>
+
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${currentPage + 1}, 'Next')"></a>
+                </li>
+
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="fragments :: page_link(${totalPages}, 'Last')"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
     <div class="modal fade text-center" id="confirmModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -147,8 +195,8 @@
     <div class="text-center">
         <p>Shopme Control Panel - Copyright &copy; Shopme</p>
     </div>
-</div>
 
+</div>
 <script type="text/javascript">
     $(document).ready(function() {
         $(".link-delete").on("click", function(e) {
@@ -161,7 +209,11 @@
             $("#confirmModal").modal();
         });
     });
-</script>
 
+    function clearFilter() {
+        window.location = "[[@{/users}]]";
+    }
+
+</script>
 </body>
 </html>
