@@ -47,7 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .usernameParameter("email")
                     .permitAll()
-                .and().logout().permitAll();
+                .and().logout().permitAll()
+                .and().rememberMe()
+                .key("AbcDefJhijkLmnOpQrst_1234567890");
 
 //        http.authorizeRequests()
 //                .antMatchers("/").permitAll();
