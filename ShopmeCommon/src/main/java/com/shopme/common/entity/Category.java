@@ -146,6 +146,17 @@ public class Category {
     public String getImagePath() {
         if (this.id == null) return "/images/image-thumbnail.png";
 
-        return "category-images/" + this.id + "/" + this.image;
+        return "/category-images/" + this.id + "/" + this.image;
     }
+
+    public boolean isHasChildren() {
+        return hasChildren;
+    }
+
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
+    }
+
+    @Transient
+    private boolean hasChildren;
 }
