@@ -28,7 +28,7 @@
                     <a class="text-white" th:href="@{'/categories/page/' + ${pageNum} + '?sortDir=' + ${reverseSortDir}}">Category Name</a>
                     <span th:class="${reverseSortDir == 'desc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}" ></span>
                 </th>
-                <th>Alias</th>
+                <th class="hideable-column">Alias</th>
                 <th>Enabled</th>
                 <th></th>
             </tr>
@@ -40,7 +40,7 @@
                     <img th:src="@{${cat.imagePath}}" style="width: 100px" class="img-fluid"/>
                 </td>
                 <td>[[${cat.name}]]</td>
-                <td>[[${cat.alias}]]</td>
+                <td class="hideable-column">[[${cat.alias}]]</td>
                 <td>
                     <div th:replace="fragments :: category_status" />
                 </td>
@@ -50,6 +50,25 @@
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="less-details">
+        <div th:each="cat : ${listCategories}" class="row m-1">
+            <div class="col-4">
+                <img th:src="@{${cat.imagePath}}" style="width: 100px" class="img-fluid"/>
+            </div>
+            <div class="col-8">
+                <div>[[${cat.name}]]</div>
+                <div class="mt-2">
+                    <div th:replace="fragments :: status(${cat.enabled}, 'category', '/categories/' + ${cat.id})" />
+                    &nbsp;
+                    <div th:replace="fragments :: edit('category', '/categories/edit/' + ${cat.id})" />
+                    &nbsp;
+                    <div th:replace="fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${!cat.hasChildren})" />
+                </div>
+            </div>
+            <div>&nbsp;</div>
+        </div>
     </div>
 
     <div th:replace="fragments :: pagination('/categories', 'top-level categories')"></div>

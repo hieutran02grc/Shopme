@@ -44,11 +44,34 @@
      title="Disable this user"
   ></a>
 
-  <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
-     th:href="@{'/users/' + ${user.id} + '/enabled/true'}"
-     title="Enable this user"
+</div>
+
+<div th:fragment="status(enabled, entityName, entityURL)" th:remove="tag">
+  <a th:if="${enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+     th:href="@{${entityURL} + '/enabled/false'}"
+     th:title="'Disable this ' + ${entityName}"
+  ></a>
+
+  <a th:if="${enabled == false}" class="fas fa-circle fa-2x icon-dark"
+     th:href="@{${entityURL} + '/enabled/true'}"
+     th:title="'Enable this ' + ${entityName}"
   ></a>
 </div>
+
+<div th:fragment="edit(entityName, editURL)" th:remove="tag">
+  <a class="fas fa-edit fa-2x icon-green" th:href="@{${editURL}}"
+     th:title="'Edit this ' + ${entityName}"></a>
+</div>
+
+<div th:fragment="delete(entityName, entityId, deleteURL, visible)" th:remove="tag">
+  <th:block th:if="${visible}">
+    <a class="fas fa-trash fa-2x icon-dark link-delete"
+       th:href="@{${deleteURL}}"
+       th:entityId="${entityId}"
+       th:title="'Delete this ' + ${entityName}"></a>
+  </th:block>
+</div>
+
 
 <div th:fragment="user_actions" th:remove="tag">
   <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
