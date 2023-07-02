@@ -1,6 +1,7 @@
 package com.shopme.common.entity;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -128,6 +129,19 @@ public class User {
         if (id == null || photos == null) return "/images/default-user.png";
 
         return "/user-photos/" + this.id + "/" + this.photos;
+    }
+
+    public boolean hasRole(String roleName) {
+        Iterator<Role> iterator = roles.iterator();
+
+        while (iterator.hasNext()) {
+            Role role = iterator.next();
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Transient

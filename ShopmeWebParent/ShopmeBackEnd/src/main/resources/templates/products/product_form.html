@@ -16,6 +16,8 @@
 		enctype="multipart/form-data"
 		th:object="${product}">
 		<input type="hidden" th:field="*{id}" />
+		<input th:if="${product.category != null}" type="hidden" 
+			id="categoryId" th:value="${product.category.id}" />
 	<div>
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 		  <li class="nav-item">
@@ -40,14 +42,45 @@
 		  	<div th:replace="products/product_overview :: content"></div>
 		  </div>
 		  <div class="tab-pane" id="description" role="tabpanel">
+		  	<th:block sec:authorize="hasAuthority('Salesperson')">
+		  	<div th:replace="products/product_description_read_only :: content"></div>
+		  	</th:block>
+		  	
+		  	<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 		  	<div th:replace="products/product_description :: content"></div>
+		  	</th:block>
 		  </div>
 		  <div class="tab-pane" id="images" role="tabpanel">
+		  	<th:block sec:authorize="hasAuthority('Salesperson')">
+		  	<div th:replace="products/product_images_read_only :: content"></div>
+		  	</th:block>		  
+		  
+		  	<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 		  	<div th:replace="products/product_images :: content"></div>
+		  	</th:block>
 		  </div>
-		  <div class="tab-pane" id="details" role="tabpanel">Details</div>
+		  <div class="tab-pane p-3" id="details" role="tabpanel">
+		  	<th:block sec:authorize="hasAuthority('Salesperson')">
+		  	<div th:replace="products/product_details_read_only :: content"></div>
+		  	</th:block>		  	
+		  	
+		  	<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+		  	<div th:replace="products/product_details :: content"></div>
+		  	<div>
+		  		<input type="button" class="btn btn-secondary" value="Add More Detail"
+		  			onclick="addNextDetailSection()" />
+		  	</div>
+		  	</th:block>
+		  		
+		  </div>
 		  <div class="tab-pane p-3" id="shipping" role="tabpanel">
+		  	<th:block sec:authorize="hasAuthority('Salesperson')">
+		  	<div th:replace="products/product_shipping_read_only :: content"></div>
+		  	</th:block>		  
+		  
+		  	<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 		  	<div th:replace="products/product_shipping :: content"></div>
+		  	</th:block>
 		  </div>
 		</div>	
 	</div>
@@ -72,7 +105,8 @@
 	
 </script>
 <script th:src="@{/js/common_form.js}"></script>
-<script th:src="@{/js/product_form_images.js}"></script>
 <script th:src="@{/js/product_form_overview.js}"></script>
+<script th:src="@{/js/product_form_images.js}"></script>
+<script th:src="@{/js/product_form_details.js}"></script>
 </body>
 </html>
