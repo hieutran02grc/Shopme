@@ -35,52 +35,53 @@ public class CustomerController {
 		
 		return "register/register_form";
 	}
-
+	
 	@PostMapping("/create_customer")
 	public String createCustomer(Customer customer, Model model,
-								 HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+			HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
 		customerService.registerCustomer(customer);
 		sendVerificationEmail(request, customer);
-
+		
 		model.addAttribute("pageTitle", "Registration Succeeded!");
-
+		
 		return "/register/register_success";
 	}
 
-	private void sendVerificationEmail(HttpServletRequest request, Customer customer)
+	private void sendVerificationEmail(HttpServletRequest request, Customer customer) 
 			throws UnsupportedEncodingException, MessagingException {
 		EmailSettingBag emailSettings = settingService.getEmailSettings();
 		JavaMailSenderImpl mailSender = Utility.prepareMailSender(emailSettings);
-
+		
 		String toAddress = customer.getEmail();
 		String subject = emailSettings.getCustomerVerifySubject();
 		String content = emailSettings.getCustomerVerifyContent();
-
+		
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
-
+		
 		helper.setFrom(emailSettings.getFromAddress(), emailSettings.getSenderName());
 		helper.setTo(toAddress);
 		helper.setSubject(subject);
-
+		
 		content = content.replace("[[name]]", customer.getFullName());
-
+		
 		String verifyURL = Utility.getSiteURL(request) + "/verify?code=" + customer.getVerificationCode();
-
+		
 		content = content.replace("[[URL]]", verifyURL);
-
+		
 		helper.setText(content, true);
-
+		
 		mailSender.send(message);
-
+		
 		System.out.println("to Address: " + toAddress);
 		System.out.println("Verify URL: " + verifyURL);
 	}
-
+	
+	
 	@GetMapping("/verify")
 	public String verifyAccount(@Param("code") String code, Model model) {
 		boolean verified = customerService.verify(code);
-
+		
 		return "register/" + (verified ? "verify_success" : "verify_fail");
 	}
 }
