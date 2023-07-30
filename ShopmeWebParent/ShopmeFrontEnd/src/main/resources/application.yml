@@ -30,4 +30,10 @@ spring:
                         scope:
                             - email
                             - profile
+                    facebook:
+                        client-id: 960580315171749
+                        client-secret: 4e64ff1e69a767265522a7e6149df0d5
+                        scope:
+                            - email
+                            - public_profile
 
