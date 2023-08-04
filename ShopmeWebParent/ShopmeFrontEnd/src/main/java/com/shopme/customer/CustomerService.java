@@ -3,6 +3,7 @@ package com.shopme.customer;
 import com.shopme.common.entity.AuthenticationType;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
+import com.shopme.common.exception.CustomerNotFoundException;
 import com.shopme.setting.CountryRepository;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,5 +102,42 @@ public class CustomerService {
 			String lastName = name.replaceFirst(firstName + " ", "");
 			customer.setLastName(lastName);
 		}
+	}
+
+	public void update(Customer customerInForm) {
+		Customer customerInDB = customerRepo.findById(customerInForm.getId()).get();
+
+		if (customerInDB.getAuthenticationType().equals(AuthenticationType.DATABASE)) {
+			if (!customerInForm.getPassword().isEmpty()) {
+				String encodedPassword = passwordEncoder.encode(customerInForm.getPassword());
+				customerInForm.setPassword(encodedPassword);
+			} else {
+				customerInForm.setPassword(customerInDB.getPassword());
+			}
+		} else {
+			customerInForm.setPassword(customerInDB.getPassword());
+		}
+
+		customerInForm.setEnabled(customerInDB.isEnabled());
+		customerInForm.setCreatedTime(customerInDB.getCreatedTime());
+		customerInForm.setVerificationCode(customerInDB.getVerificationCode());
+		customerInForm.setAuthenticationType(customerInDB.getAuthenticationType());
+		customerInForm.setResetPasswordToken(customerInDB.getResetPasswordToken());
+
+		customerRepo.save(customerInForm);
+	}
+
+	public String updateRessetPasswordToken(String email) throws CustomerNotFoundException {
+		Customer customer = customerRepo.findByEmail(email);
+
+		if(customer!= null){
+			String token = RandomString.make(30);
+			customer.setResetPasswordToken(token);
+			customerRepo.save(customer);
+			return token;
+		}else {
+			throw new CustomerNotFoundException("Could not found this user with email " + email);
+		}
+
 	}
 }
