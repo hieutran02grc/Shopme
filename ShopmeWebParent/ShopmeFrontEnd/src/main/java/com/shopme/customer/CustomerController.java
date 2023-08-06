@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static com.shopme.Utility.getEmailOfAuthenticatedCustomer;
+
 @Controller
 public class CustomerController {
 	@Autowired private CustomerService customerService;
@@ -78,8 +80,10 @@ public class CustomerController {
 		helper.setText(content, true);
 		
 		mailSender.send(message);
-	}
-	
+		
+		System.out.println("to Address: " + toAddress);
+		System.out.println("Verify URL: " + verifyURL);
+	}	
 	
 	@GetMapping("/verify")
 	public String verifyAccount(@Param("code") String code, Model model) {
@@ -90,62 +94,45 @@ public class CustomerController {
 
 	@GetMapping("/account_details")
 	public String viewAccountDetails(Model model, HttpServletRequest request) {
-		String email = getEmailOfAuthenticatedCustomer(request);
+		String email = Utility.getEmailOfAuthenticatedCustomer(request);
 		Customer customer = customerService.getCustomerByEmail(email);
 		List<Country> listCountries = customerService.listAllCountries();
 
-		model.addAttribute("customer" , customer);
+		model.addAttribute("customer", customer);
 		model.addAttribute("listCountries", listCountries);
+
 		return "customer/account_form";
 	}
-
-	private String getEmailOfAuthenticatedCustomer(HttpServletRequest request){
-		Object principal = request.getUserPrincipal();
-		String customerEmail = null;
-
-		if(principal instanceof UsernamePasswordAuthenticationToken
-				|| principal instanceof RememberMeAuthenticationToken){
-			customerEmail = request.getUserPrincipal().getName();
-		} else if (principal instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) principal;
-			CustomerOAuth2User oauth2User = (CustomerOAuth2User) oauth2Token.getPrincipal();
-			customerEmail = oauth2User.getEmail();
-		}
-
-		return customerEmail;
-	}
-
+	
 	@PostMapping("/update_account_details")
-	public String updateAccountDetails(Model model, Customer customer, RedirectAttributes redirectAttributes,
-			HttpServletRequest request){
+	public String updateAccountDetails(Model model, Customer customer, RedirectAttributes ra,
+			HttpServletRequest request) {
 		customerService.update(customer);
-
-		redirectAttributes.addFlashAttribute("message", "Your account details have been updated");
-
+		ra.addFlashAttribute("message", "Your account details have been updated.");
+		
 		updateNameForAuthenticatedCustomer(customer, request);
-
+		
 		return "redirect:/account_details";
 	}
 
 	private void updateNameForAuthenticatedCustomer(Customer customer, HttpServletRequest request) {
-
 		Object principal = request.getUserPrincipal();
-
-		if (principal instanceof UsernamePasswordAuthenticationToken
+		
+		if (principal instanceof UsernamePasswordAuthenticationToken 
 				|| principal instanceof RememberMeAuthenticationToken) {
 			CustomerUserDetails userDetails = getCustomerUserDetailsObject(principal);
 			Customer authenticatedCustomer = userDetails.getCustomer();
 			authenticatedCustomer.setFirstName(customer.getFirstName());
 			authenticatedCustomer.setLastName(customer.getLastName());
-
+			
 		} else if (principal instanceof OAuth2AuthenticationToken) {
 			OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) principal;
 			CustomerOAuth2User oauth2User = (CustomerOAuth2User) oauth2Token.getPrincipal();
 			String fullName = customer.getFirstName() + " " + customer.getLastName();
 			oauth2User.setFullName(fullName);
-		}
+		}		
 	}
-
+	
 	private CustomerUserDetails getCustomerUserDetailsObject(Object principal) {
 		CustomerUserDetails userDetails = null;
 		if (principal instanceof UsernamePasswordAuthenticationToken) {
@@ -155,9 +142,7 @@ public class CustomerController {
 			RememberMeAuthenticationToken token = (RememberMeAuthenticationToken) principal;
 			userDetails = (CustomerUserDetails) token.getPrincipal();
 		}
-
+		
 		return userDetails;
 	}
-
-
 }

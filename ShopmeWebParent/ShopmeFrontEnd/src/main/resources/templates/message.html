@@ -2,18 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments :: page_head(${pageTitle}, 'none')" />
 <body>
-<div class="container-fluid">
+<div class="container-fluid text-center">
 	<div th:replace="navigation :: header_menu"></div>
 	
 	<div>&nbsp;</div>
-	
-	<div class="text-center">
-		<h2>Customer Registration</h2>
-		<h4>You have registered successfully as a customer</h4>
-		<p>Please check your email to verify our account.</p>
-		<p><a th:href="@{/login}">Login here</a></p>
-	</div>
 
+	<div th:if="${title != null}">
+		<h2>[[${title}]]</h2>
+	</div>
+		
+	<div th:if="${message != null}">
+		<h3>[[${message}]]</h3>
+	</div>
+	
 	<div>&nbsp;</div>
 	
 	<div th:replace="navigation :: footer_menu"></div>

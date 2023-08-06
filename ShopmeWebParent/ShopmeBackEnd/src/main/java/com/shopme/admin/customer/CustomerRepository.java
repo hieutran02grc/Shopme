@@ -22,5 +22,7 @@ public interface CustomerRepository extends SearchRepository<Customer, Integer> 
 	@Query("SELECT c FROM Customer c WHERE c.email = ?1")
 	public Customer findByEmail(String email);
 	
-	public Long countById(Integer id);	
+	public Long countById(Integer id);
+
+
 }
