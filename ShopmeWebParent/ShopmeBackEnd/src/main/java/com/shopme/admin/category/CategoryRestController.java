@@ -11,8 +11,7 @@ public class CategoryRestController {
     CategoryService categoryService;
 
     @PostMapping("/categories/check_unique")
-    public String CheckUnique(@Param("id") Integer id, @Param("name") String name,
-                              @Param("alias") String alias){
+    public String CheckUnique(Integer id, String name, String alias){
         return categoryService.CheckUnique(id, name, alias);
     }
 }
