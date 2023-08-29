@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface CustomerRepository extends SearchRepository<Customer, Integer> {
 	
@@ -22,7 +21,5 @@ public interface CustomerRepository extends SearchRepository<Customer, Integer> 
 	@Query("SELECT c FROM Customer c WHERE c.email = ?1")
 	public Customer findByEmail(String email);
 	
-	public Long countById(Integer id);
-
-
+	public Long countById(Integer id);	
 }

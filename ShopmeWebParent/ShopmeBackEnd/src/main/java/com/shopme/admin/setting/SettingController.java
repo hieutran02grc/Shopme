@@ -2,7 +2,7 @@ package com.shopme.admin.setting;
 
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.common.entity.Currency;
-import com.shopme.common.entity.Setting;
+import com.shopme.common.entity.setting.Setting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -86,24 +86,24 @@ public class SettingController {
 		
 		service.saveAll(listSettings);
 	}
-
+	
 	@PostMapping("/settings/save_mail_server")
 	public String saveMailServerSetttings(HttpServletRequest request, RedirectAttributes ra) {
 		List<Setting> mailServerSettings = service.getMailServerSettings();
 		updateSettingValuesFromForm(request, mailServerSettings);
-
+		
 		ra.addFlashAttribute("message", "Mail server settings have been saved");
-
+		
 		return "redirect:/settings#mailServer";
 	}
-
+	
 	@PostMapping("/settings/save_mail_templates")
 	public String saveMailTemplateSetttings(HttpServletRequest request, RedirectAttributes ra) {
 		List<Setting> mailTemplateSettings = service.getMailTemplateSettings();
 		updateSettingValuesFromForm(request, mailTemplateSettings);
-
+		
 		ra.addFlashAttribute("message", "Mail template settings have been saved");
-
+		
 		return "redirect:/settings#mailTemplates";
-	}
+	}	
 }

@@ -41,18 +41,18 @@ public class PagingAndSortingHelper {
 		model.addAttribute("totalItems", page.getTotalElements());
 		model.addAttribute(listName, listItems);
 	}
-
+	
 	public void listEntities(int pageNum, int pageSize, SearchRepository<?, Integer> repo) {
 		Pageable pageable = createPageable(pageSize, pageNum);
 		Page<?> page = null;
-
+		
 		if (keyword != null) {
 			page = repo.findAll(keyword, pageable);
 		} else {
 			page = repo.findAll(pageable);
 		}
-
-		updateModelAttributes(pageNum, page);
+		
+		updateModelAttributes(pageNum, page);		
 	}
 	
 	public Pageable createPageable(int pageSize, int pageNum) {

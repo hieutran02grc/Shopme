@@ -1,7 +1,7 @@
 package com.shopme.admin.setting;
 
-import com.shopme.common.entity.Setting;
-import com.shopme.common.entity.SettingCategory;
+import com.shopme.common.entity.setting.Setting;
+import com.shopme.common.entity.setting.SettingCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,12 +31,16 @@ public class SettingService {
 	public void saveAll(Iterable<Setting> settings) {
 		repo.saveAll(settings);
 	}
-
+	
 	public List<Setting> getMailServerSettings() {
 		return repo.findByCategory(SettingCategory.MAIL_SERVER);
 	}
-
+	
 	public List<Setting> getMailTemplateSettings() {
 		return repo.findByCategory(SettingCategory.MAIL_TEMPLATES);
+	}	
+	
+	public List<Setting> getCurrencySettings() {
+		return repo.findByCategory(SettingCategory.CURRENCY);
 	}
 }

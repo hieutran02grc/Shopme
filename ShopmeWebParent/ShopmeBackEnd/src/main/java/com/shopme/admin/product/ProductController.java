@@ -8,10 +8,9 @@ import com.shopme.admin.paging.PagingAndSortingParam;
 import com.shopme.admin.security.ShopmeUserDetails;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
-import com.shopme.common.entity.Product;
+import com.shopme.common.entity.product.Product;
 import com.shopme.common.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +40,7 @@ public class ProductController {
 	public String listByPage(
 			@PagingAndSortingParam(listName = "listProducts", moduleURL = "/products") PagingAndSortingHelper helper,
 			@PathVariable(name = "pageNum") int pageNum, Model model,
-			@Param("categoryId") Integer categoryId
+			Integer categoryId
 			) {
 		
 		productService.listByPage(pageNum, helper, categoryId);

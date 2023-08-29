@@ -1,16 +1,11 @@
 package com.shopme.admin.customer;
 
 import com.shopme.admin.paging.PagingAndSortingHelper;
-import com.shopme.admin.paging.SearchRepository;
 import com.shopme.admin.setting.country.CountryRepository;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
 import com.shopme.common.exception.CustomerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +21,7 @@ public class CustomerService {
 	@Autowired private CustomerRepository customerRepo;
 	@Autowired private CountryRepository countryRepo;	
 	@Autowired private PasswordEncoder passwordEncoder;
-
+	
 	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
 		helper.listEntities(pageNum, CUSTOMERS_PER_PAGE, customerRepo);
 	}
@@ -57,22 +52,23 @@ public class CustomerService {
 		
 		return true;
 	}
-
+	
 	public void save(Customer customerInForm) {
 		Customer customerInDB = customerRepo.findById(customerInForm.getId()).get();
-
+		
 		if (!customerInForm.getPassword().isEmpty()) {
 			String encodedPassword = passwordEncoder.encode(customerInForm.getPassword());
-			customerInForm.setPassword(encodedPassword);
+			customerInForm.setPassword(encodedPassword);			
 		} else {
 			customerInForm.setPassword(customerInDB.getPassword());
-		}
-
+		}		
+		
 		customerInForm.setEnabled(customerInDB.isEnabled());
 		customerInForm.setCreatedTime(customerInDB.getCreatedTime());
 		customerInForm.setVerificationCode(customerInDB.getVerificationCode());
+		customerInForm.setAuthenticationType(customerInDB.getAuthenticationType());
 		customerInForm.setResetPasswordToken(customerInDB.getResetPasswordToken());
-
+		
 		customerRepo.save(customerInForm);
 	}
 	

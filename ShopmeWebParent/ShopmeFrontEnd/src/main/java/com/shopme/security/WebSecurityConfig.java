@@ -22,39 +22,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired private CustomerOAuth2UserService oAuth2UserService;
 	@Autowired private OAuth2LoginSuccessHandler oauth2LoginHandler;
 	@Autowired private DatabaseLoginSuccessHandler databaseLoginHandler;
-
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/account_details",  "/update_account_details", "/cart").authenticated()
-				.anyRequest().permitAll()
-				.and()
-				.formLogin()
+			.antMatchers("/account_details", "/update_account_details", 
+					"/cart", "/address_book/**").authenticated()
+			.anyRequest().permitAll()
+			.and()
+			.formLogin()
 				.loginPage("/login")
 				.usernameParameter("email")
 				.successHandler(databaseLoginHandler)
 				.permitAll()
-				.and()
-				.oauth2Login()
+			.and()
+			.oauth2Login()
 				.loginPage("/login")
 				.userInfoEndpoint()
 				.userService(oAuth2UserService)
 				.and()
 				.successHandler(oauth2LoginHandler)
-				.and()
-				.logout().permitAll()
-				.and()
-				.rememberMe()
-					.key("1234567890_aBcDeFgHiJkLmNoPqRsTuVwXyZ")
-					.tokenValiditySeconds(14 * 24 * 60 * 60)
-				.and()
-					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-		;
+			.and()
+			.logout().permitAll()
+			.and()
+			.rememberMe()
+				.key("1234567890_aBcDeFgHiJkLmNoPqRsTuVwXyZ")
+				.tokenValiditySeconds(14 * 24 * 60 * 60)
+			.and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+			;			
 	}
 
 	@Override
@@ -66,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public UserDetailsService userDetailsService() {
 		return new CustomerUserDetailsService();
 	}
-
+	
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -75,5 +76,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		authProvider.setPasswordEncoder(passwordEncoder());
 
 		return authProvider;
-	}
+	}	
 }

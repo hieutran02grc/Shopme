@@ -1,7 +1,5 @@
 package com.shopme.common.setting;
 
-import com.shopme.common.entity.Setting;
-import com.shopme.common.entity.SettingCategory;
 import com.shopme.setting.SettingRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

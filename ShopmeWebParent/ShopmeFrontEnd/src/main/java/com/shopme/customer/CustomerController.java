@@ -8,7 +8,6 @@ import com.shopme.security.oauth.CustomerOAuth2User;
 import com.shopme.setting.EmailSettingBag;
 import com.shopme.setting.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
@@ -25,8 +24,6 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import static com.shopme.Utility.getEmailOfAuthenticatedCustomer;
 
 @Controller
 public class CustomerController {
@@ -91,16 +88,16 @@ public class CustomerController {
 		
 		return "register/" + (verified ? "verify_success" : "verify_fail");
 	}
-
+	
 	@GetMapping("/account_details")
 	public String viewAccountDetails(Model model, HttpServletRequest request) {
 		String email = Utility.getEmailOfAuthenticatedCustomer(request);
 		Customer customer = customerService.getCustomerByEmail(email);
 		List<Country> listCountries = customerService.listAllCountries();
-
+		
 		model.addAttribute("customer", customer);
 		model.addAttribute("listCountries", listCountries);
-
+		
 		return "customer/account_form";
 	}
 	
@@ -112,7 +109,14 @@ public class CustomerController {
 		
 		updateNameForAuthenticatedCustomer(customer, request);
 		
-		return "redirect:/account_details";
+		String redirectOption = request.getParameter("redirect");
+		String redirectURL = "redirect:/account_details";
+		
+		if ("address_book".equals(redirectOption)) {
+			redirectURL = "redirect:/address_book";
+		}
+		
+		return redirectURL;
 	}
 
 	private void updateNameForAuthenticatedCustomer(Customer customer, HttpServletRequest request) {
