@@ -1,5 +1,7 @@
 package com.shopme.common.entity;
 
+import com.shopme.common.Constants;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -114,7 +116,7 @@ public class User extends IdBasedEntity {
 	public String getPhotosImagePath() {
 		if (id == null || photos == null) return "/images/default-user.png";
 		
-		return "/user-photos/" + this.id + "/" + this.photos;
+		return Constants.S3_BASE_URI + "/user-photos/" + this.id + "/" + this.photos;
 	}
 	
 	@Transient

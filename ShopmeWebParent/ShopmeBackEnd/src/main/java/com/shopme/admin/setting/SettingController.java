@@ -1,6 +1,7 @@
 package com.shopme.admin.setting;
 
 import com.shopme.admin.FileUploadUtil;
+import com.shopme.common.Constants;
 import com.shopme.common.entity.Currency;
 import com.shopme.common.entity.setting.Setting;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class SettingController {
 		for (Setting setting : listSettings) {
 			model.addAttribute(setting.getKey(), setting.getValue());
 		}
+
+		model.addAttribute("S3_BASE_URI", Constants.S3_BASE_URI);
 		
 		return "settings/settings";
 	}
