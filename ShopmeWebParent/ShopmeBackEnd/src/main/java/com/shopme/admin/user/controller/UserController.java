@@ -1,5 +1,6 @@
 package com.shopme.admin.user.controller;
 
+import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.admin.paging.PagingAndSortingHelper;
 import com.shopme.admin.paging.PagingAndSortingParam;
@@ -67,12 +68,12 @@ public class UserController {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			user.setPhotos(fileName);
 			User savedUser = service.save(user);
-			
+
 			String uploadDir = "user-photos/" + savedUser.getId();
-			
-			FileUploadUtil.cleanDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-			
+
+			AmazonS3Util.removeFolder(uploadDir);
+			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
+
 		} else {
 			if (user.getPhotos().isEmpty()) user.setPhotos(null);
 			service.save(user);
@@ -113,7 +114,9 @@ public class UserController {
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
-			service.delete(id);;
+			service.delete(id);
+			String userPhotosDir = "user-photos/" + id;
+			AmazonS3Util.removeFolder(userPhotosDir);
 			redirectAttributes.addFlashAttribute("message", 
 					"The user ID " + id + " has been deleted successfully");
 		} catch (UserNotFoundException ex) {
